@@ -6,17 +6,19 @@ node {
      gitcommit = readFile('.git/commit-id').trim()
    }
    stage('test') {
-     def contenedortest = docker.image('node:4.6')
+     def contenedortest = docker.image('node:4.7.1')
      contenedortest.pull()
      contenedortest.inside {
        sh 'npm install --only=dev'
        sh 'npm test'
+       sh 'node -v'
      }
    }                   
    stage('Docker Build & Push') {
      docker.withRegistry('https://registry.hub.docker.com', 'docker-hub') {
-      def nuestraapp = docker.build("macloujulian/nodejsapp:${gitcommit}", ".")
+      def nuestraapp = docker.build("teemo0017/prueba:${gitcommit}", ".")
       nuestraapp.push()
+      echo ${nuestraapp}
      }
    }
 }
