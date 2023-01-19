@@ -18,7 +18,6 @@ node {
      docker.withRegistry('https://registry.hub.docker.com', 'docker') {
       def nuestraapp = docker.build("teemo0017/prueba:${gitcommit}", ".")
       nuestraapp.push()
-      echo ${nuestraapp}
      }
    }
 }
