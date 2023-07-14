@@ -1,23 +1,79 @@
-{
-  "name": "hola-mundo-nodeJS",
-  "version": "1.0.0",
-  "description": "Es una app Hello World en nodejS",
-  "private": true,
-  "scripts": {
-    "start": "node index.js",
-    "test": "npm install inherits && mocha"
-  },
-  "engines": {
-    "node": "^4.6.1"
-  },
-  "dependencies": {
-    "express": "^4.14.0",
-    "http-errors": "^1.7.0",
-    "mysql": "^2.10.2"
-  },
-  "devDependencies": {
-    "mocha": "^5.2.0",
-    "inherits": "^2.0.3",
-    "ms": "^2.1.1"
-  }
+<?php
+
+// Variables de corrientes
+// I1, I2, I3...
+$argCorrientes = array();
+// IA, IB...
+$argCorrientes2 = array();
+// v1, v2, v3
+$argVoltajes = array();
+
+// R1, R2...
+$argResistencias = array();
+
+// Paso 1: extraer la resistencia equivalente en paralelo
+// I2 = I3 + I1
+// I1 = I2 - I3
+function getCorriente1($I2, $I3) {
+  $corriente = $I2 - $I3;
+  return -$corriente;
 }
+
+// Ley de voltajes de Kirchoff
+// EV = 0
+// Malla 1
+// 100V = 10 * I1
+// IA = I2
+function getCorrienteA($voltaje, $resistencia) {
+  $res = $voltaje / $resistencia;
+  return $res;
+}
+
+// Malla 2
+// 100V + 200V = 13.3 * I2
+// 300V = 13.3 * I2
+function getCorrienteB($voltaje1, $voltaje2, $resistencia) {
+  $res = ($voltaje1 + $voltaje2) / $resistencia;
+  return $res;
+}
+
+$argResistencias[] = floatval(readline("Ingresa el valor de la resistencia 1: "));
+$argResistencias[] = floatval(readline("Ingresa el valor de la resistencia 2: "));
+$argResistencias[] = floatval(readline("Ingresa el valor de la resistencia 3: "));
+$argVoltajes[] = floatval(readline("Ingresa el valor del voltaje 1: "));
+$argVoltajes[] = floatval(readline("Ingresa el valor del voltaje 2: "));
+
+// Resistencia equivalente: 1/Req = (1/40) + (1/20) = 40/3
+function resistencia_equivalente_paralelo($r1, $r2) {
+  $resistencia_equivalente = ($r1 * $r2) / ($r1 + $r2);
+  return $resistencia_equivalente;
+}
+
+$Req = resistencia_equivalente_paralelo(40, 20);
+
+// Se calcula el valor de la corriente I2
+$IA = getCorrienteA($argVoltajes[0], $argResistencias[0]);
+array_splice($argCorrientes, 1, 0, $IA);
+$argCorrientes2[] = $IA;
+$IB = getCorrienteB($argVoltajes[0], $argVoltajes[1], $Req);
+array_splice($argCorrientes, 2, 0, $IB);
+array_splice($argCorrientes, 5, 0, $IB);
+
+// Voltaje en Paralelo
+// IB * Req = V * Malla2
+// 22.56 (13.3) =
+$V = $IB * $Req;
+$I1 = getCorriente1($argCorrientes[0], $argCorrientes[1]);
+// El voltaje en paralelo es el mismo
+$I4 = $V / $argResistencias[2];
+
+echo "El valor de IA es: " . $IA . "\n";
+echo "El valor de IB es: " . $IB . "\n";
+echo "El Valor de I1 es: " . $I1 . "\n";
+echo "El Valor de I2 es: " . $argCorrientes[0] . "\n";
+echo "El Valor de I3 es: " . $argCorrientes[1] . "\n";
+echo "El Valor de I4 es: " . $I4 . "\n";
+echo "El Valor de I5 es: " . $argCorrientes[2] . "\n";
+echo "El valor del voltaje del circuito es: " . $V . "\n";
+
+?>
