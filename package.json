@@ -1,79 +1,159 @@
-<?php
+#Variables de corrientes
 
-// Variables de corrientes
-// I1, I2, I3...
-$argCorrientes = array();
-// IA, IB...
-$argCorrientes2 = array();
-// v1, v2, v3
-$argVoltajes = array();
+#I1,I2,I3...
 
-// R1, R2...
-$argResistencias = array();
+argCorrientes=[]
 
-// Paso 1: extraer la resistencia equivalente en paralelo
-// I2 = I3 + I1
-// I1 = I2 - I3
-function getCorriente1($I2, $I3) {
-  $corriente = $I2 - $I3;
-  return -$corriente;
-}
+#IA,IB...
 
-// Ley de voltajes de Kirchoff
-// EV = 0
-// Malla 1
-// 100V = 10 * I1
-// IA = I2
-function getCorrienteA($voltaje, $resistencia) {
-  $res = $voltaje / $resistencia;
-  return $res;
-}
+argCorrientes2=[]
 
-// Malla 2
-// 100V + 200V = 13.3 * I2
-// 300V = 13.3 * I2
-function getCorrienteB($voltaje1, $voltaje2, $resistencia) {
-  $res = ($voltaje1 + $voltaje2) / $resistencia;
-  return $res;
-}
+#v1,v2,v3
 
-$argResistencias[] = floatval(readline("Ingresa el valor de la resistencia 1: "));
-$argResistencias[] = floatval(readline("Ingresa el valor de la resistencia 2: "));
-$argResistencias[] = floatval(readline("Ingresa el valor de la resistencia 3: "));
-$argVoltajes[] = floatval(readline("Ingresa el valor del voltaje 1: "));
-$argVoltajes[] = floatval(readline("Ingresa el valor del voltaje 2: "));
+argVoltajes=[]
 
-// Resistencia equivalente: 1/Req = (1/40) + (1/20) = 40/3
-function resistencia_equivalente_paralelo($r1, $r2) {
-  $resistencia_equivalente = ($r1 * $r2) / ($r1 + $r2);
-  return $resistencia_equivalente;
-}
 
-$Req = resistencia_equivalente_paralelo(40, 20);
 
-// Se calcula el valor de la corriente I2
-$IA = getCorrienteA($argVoltajes[0], $argResistencias[0]);
-array_splice($argCorrientes, 1, 0, $IA);
-$argCorrientes2[] = $IA;
-$IB = getCorrienteB($argVoltajes[0], $argVoltajes[1], $Req);
-array_splice($argCorrientes, 2, 0, $IB);
-array_splice($argCorrientes, 5, 0, $IB);
+#R1,R2...
 
-// Voltaje en Paralelo
-// IB * Req = V * Malla2
-// 22.56 (13.3) =
-$V = $IB * $Req;
-$I1 = getCorriente1($argCorrientes[0], $argCorrientes[1]);
-// El voltaje en paralelo es el mismo
-$I4 = $V / $argResistencias[2];
+argResistencias=[]
 
-echo "El valor de IA es: " . $IA . "\n";
-echo "El valor de IB es: " . $IB . "\n";
-echo "El Valor de I1 es: " . $I1 . "\n";
-echo "El Valor de I2 es: " . $argCorrientes[0] . "\n";
-echo "El Valor de I3 es: " . $argCorrientes[1] . "\n";
-echo "El Valor de I4 es: " . $I4 . "\n";
-echo "El Valor de I5 es: " . $argCorrientes[2] . "\n";
-echo "El valor del voltaje del circuito es: " . $V . "\n";
 
-?>
+
+
+
+
+
+#paso 1 extraer la resistencia equivante en paralelo
+
+#I2=I3+I1
+
+#I1=I2-I3
+
+def getCorriente1(I2,I3):
+
+  corriente=I2-I3
+
+  return (corriente*-1)
+
+
+
+#ley de voltajes de Kirchoff
+
+#EV=0
+
+#Malla 1
+
+#100V=10*I1
+
+#IA=I2
+
+def getCorrienteA(voltaje,resistencia):
+
+  res = voltaje/resistencia
+
+  return res
+
+
+
+#Malla 2
+
+#100V+200V=13,3*I2
+
+#300V=13,3*I2
+
+def getCorrienteB(voltaje1, voltaje2,resistencia):
+
+  res = (voltaje1+voltaje2)/resistencia
+
+  return res
+
+
+
+argResistencias.insert(0,float(input("ingresa el valor de la resistencia 1 ")))
+
+argResistencias.insert(1,float(input("ingresa el valor de la resistencia 2 ")))
+
+argResistencias.insert(2,float(input("ingresa el valor de la resistencia 3 ")))
+
+argVoltajes.append(float(input("ingresa el valor del voltaje 1 ")))
+
+argVoltajes.append(float(input("ingresa el valor del voltaje 2 ")))
+
+
+
+#Resistencia equivalente 1/Req = (1/40) + (1/20)  = 40/3
+
+def resistencia_equivalente_paralelo(r1, r2):
+
+    resistencia_equivalente = (r1 * r2) / (r1 + r2)
+
+    return resistencia_equivalente
+
+
+
+Req=resistencia_equivalente_paralelo(40, 20)
+
+
+
+
+
+#se calcula el valor de la corriente I2
+
+IA=getCorrienteA(argVoltajes[0],argResistencias[0])
+
+argCorrientes.insert(1,IA)
+
+#I2=IA
+
+argCorrientes2.append(IA)
+
+#I3=IB
+
+IB=getCorrienteB(argVoltajes[0],argVoltajes[1],Req)
+
+argCorrientes.insert(2,IB)
+
+argCorrientes.insert(5,IB)
+
+
+
+
+
+#Voltaje en Paralelo
+
+#IB*Req=V*Malla2
+
+#22,56 (13,3) = 
+
+
+
+V=IB*Req
+
+I1=getCorriente1(argCorrientes[0],argCorrientes[1])
+
+# El voltaje en paralelo es el mismo
+
+I4=V/argResistencias[2]
+
+
+
+print("El valor de IA es : "+str(IA))
+
+print("El valor de IB es : "+str(IB))
+
+
+
+print("El Valor de I1 es : "+ str(I1))
+
+print("El Valor de I2 es : "+ str(argCorrientes[0]))
+
+print("El Valor de I3 es : "+ str(argCorrientes[1]))
+
+print("El Valor de I4 es : "+ str(I4))
+
+print("El Valor de I5 es : "+ str(argCorrientes[2]))
+
+
+
+print("El valor de voltaje del circiuto es : "+str(V))
